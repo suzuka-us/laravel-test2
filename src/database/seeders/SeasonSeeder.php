@@ -12,3 +12,4 @@ class SeasonSeeder extends Seeder {
         }
     }
 }
+
