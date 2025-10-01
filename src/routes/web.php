@@ -1,6 +1,15 @@
+<?php
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 
+
+
+
+
+
+
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');       // 商品一覧
+
 Route::get('/products/search', [ProductController::class, 'search'])->name('products.search'); // 検索
 Route::get('/products/register', [ProductController::class, 'create'])->name('products.create'); // 登録画面表示
 Route::post('/products/register', [ProductController::class, 'store'])->name('products.store'); // 商品登録
