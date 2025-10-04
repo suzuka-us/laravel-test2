@@ -12,7 +12,8 @@ class ProductController extends Controller
     // 商品一覧
     public function index()
     {
-        $products = Product::with('seasons')->get(); // 季節も取得
+        // ページネーションつきで商品一覧を取得
+        $products = Product::with('seasons')->paginate(10); 
         return view('products.index', compact('products'));
     }
 
@@ -39,10 +40,10 @@ class ProductController extends Controller
         }
 
         $product = Product::create([
-            'name' => $data['name'],
-            'price' => $data['price'],
+            'name'        => $data['name'],
+            'price'       => $data['price'],
             'description' => $data['description'],
-            'image' => $data['image'],
+            'image'       => $data['image'] ?? null,
         ]);
 
         if (isset($data['season_ids'])) {
@@ -63,12 +64,12 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $data = $request->validate([
-            'name' => ['required', 'string'],
-            'price' => ['required', 'integer', 'between:0,10000'],
+            'name'        => ['required', 'string'],
+            'price'       => ['required', 'integer', 'between:0,10000'],
             'description' => ['required', 'string', 'max:120'],
-            'season_ids' => ['required', 'array'],
-            'season_ids.*' => ['exists:seasons,id'],
-            'image' => ['nullable', 'image', 'mimes:png,jpeg'],
+            'season_ids'  => ['required', 'array'],
+            'season_ids.*'=> ['exists:seasons,id'],
+            'image'       => ['nullable', 'image', 'mimes:png,jpeg'],
         ]);
 
         if ($request->hasFile('image')) {
@@ -99,8 +100,12 @@ class ProductController extends Controller
     // 検索
     public function search(Request $request)
     {
-        $keyword = $request->input('keyword');
-        $products = Product::where('name', 'like', "%{$keyword}%")->get();
+        // ← ここを修正してフォームと合わせる
+        $keyword = $request->input('name');  
+
+        $products = Product::where('name', 'like', "%{$keyword}%")
+            ->with('seasons')
+            ->paginate(10); // ← get() → paginate() に修正
 
         return view('products.index', compact('products'));
     }
