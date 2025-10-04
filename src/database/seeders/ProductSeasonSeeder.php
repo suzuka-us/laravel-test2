@@ -1,5 +1,6 @@
 <?php
 
+// database/seeders/ProductSeasonSeeder.php
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -9,20 +10,25 @@ use App\Models\Season;
 class ProductSeasonSeeder extends Seeder
 {
     public function run(): void
-    
     {
-        // 全ての季節を取得
-        $seasons = Season::all();
+        // 商品と季節の対応を配列で作る
+        $productSeasons = [
+            'キウイ' => ['秋', '冬'],
+            'ストロベリー' => ['春'],
+            'オレンジ' => ['冬'],
+            'スイカ' => ['夏'],
+            'ピーチ' => ['夏'],
+            'シャインマスカット' => ['夏','秋'],
+            'パイナップル' => ['春','夏'],
+            'ブドウ' => ['夏','秋'],
+            'バナナ' => ['夏'],
+            'メロン' => ['春','夏'],
+        ];
 
-
-        // 全ての商品に対してランダムに季節を割り当てる
-        Product::all()->each(function ($product) use ($seasons) {
-            // 1〜4個の季節をランダムに選択
-            $assignedSeasons = $seasons->random(rand(1, 4))->pluck('id')->toArray();
-
-            // 中間テーブルに保存
-            $product->seasons()->sync($assignedSeasons);
-        });
+        foreach ($productSeasons as $productName => $seasonNames) {
+            $product = Product::where('name', $productName)->first();
+            $seasonIds = Season::whereIn('name', $seasonNames)->pluck('id')->toArray();
+            $product->seasons()->sync($seasonIds);
+        }
     }
 }
-
