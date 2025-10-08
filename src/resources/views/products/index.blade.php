@@ -7,13 +7,15 @@
     <!-- 商品登録ボタン -->
     <div style="margin-bottom: 15px; text-align: right;">
         <a href="{{ route('products.create') }}" 
-           style="background: #4CAF50; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none;">
+           style="background: #FFA500; color: #000000; padding: 8px 16px; border-radius: 6px; text-decoration: none;">
             + 商品を追加
         </a>
     </div>
 
     <!-- 検索フォーム -->
-    <form action="{{ route('products.search') }}" method="GET" style="margin-bottom: 15px;">
+   <form action="{{ route('products.search') }}" method="GET" 
+      style="margin-bottom: 15px; display: flex; flex-direction: column; align-items: flex-start; gap: 10px;">
+
         <input type="text" name="name" placeholder="商品名で検索" value="{{ request('name') }}">
         <button type="submit">検索</button>
 
